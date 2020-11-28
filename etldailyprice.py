@@ -19,7 +19,10 @@ def getDailyStockValue(code,page_limit:int = 50):
     df = df.rename(columns = new_col_names)
     df['date'] = pd.to_datetime(df['date'])
     df['code'] = code       
-    return df[df.date.notnull()]
+    df = df[df.date.notnull()]
+    df['yeardate'] = df['date'].apply(lambda x : x.year)
+    df['monthdate'] = df['date'].apply(lambda x: x.month)
+    return df
   except Exception as e:
     print(e)
     return df
@@ -27,26 +30,33 @@ def getDailyStockValue(code,page_limit:int = 50):
 
 def loadDailyPrice(c:str,pagenum:int=1):
   try:
-    print('==================== code : {c}  =====================')
-    df = getDailyStockValue(c,pagenum)
+    print(f'==================== code : {c}  =====================')
+    df = getDailyStockValue(c,pagenum)    
     mintime,maxtime =  df.date.min(),df.date.max()
     mintimestr,maxtimestr = mintime.strftime('%Y-%m-%d'),maxtime.strftime('%Y-%m-%d')
-    exist_df = getDailyPriceFromDb(c,mintimestr,maxtimestr)
+    exist_df = getDailyPriceFromDb(c,mintimestr,maxtimestr)    
     exist_df['date'] = pd.to_datetime(exist_df['date'])
     joincol = ['date','code']
     new,exist = filterNewExistTable(df,exist_df,joincol,joincol,'PriceId',False)
     new.to_sql('DailyPrice',sqlserver,'dbo',if_exists='append',index=False)
     print(f'code : {c} => {len(new)} rows inserted')
-    print('=======================================================')
+    print('=========================================================')
   except Exception as e:
     print(e)
   
+#loadDailyPrice('263050',1)
+#d = getDailyStockValue('263050',1)
 if __name__ =='__main__':
   num_cores = multiprocessing.cpu_count()
-  pages = 2 if len(sys.argv) < 2  else sys.argv[1]
+  pages = 2 if len(sys.argv) < 2  else int(sys.argv[1])
   print(pages)
   codes = getCodeInfo().code.unique()
   parmap.map(loadDailyPrice,codes,pages,pm_pbar=True,pm_processes=num_cores)
+
+# from datetime import datetime
+# d = datetime(2020,1,1)
+# d.month
+# d.year
 
 # for c in codes:
 #   item = getDailyStockValue('DSR',1)
