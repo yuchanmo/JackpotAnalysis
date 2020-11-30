@@ -192,19 +192,57 @@ def extractKeyItemsFromStockValue(fromdate:str)->list:
     return resdf
 
 def loadKeyItem(fromdate:str):
-    fromdate = fromdate if fromdate is not None else datetime.datetime.today().strftime('%Y-%m-%d')
-    resdf = extractKeyItemsFromStockValue(fromdate)
-    exist_df = pd.read_sql(f"select * from KeyItem where issuedate = '{fromdate}'",sqlserver)
-    exist_df.info()
-    resdf.info()
-    join_cols = ['issuedate','category','code']
-    n,_ = filterNewExistTable(resdf,exist_df,join_cols,join_cols,'KeyItemId')
-    resdf.to_sql('KeyItem',sqlserver,'dbo',if_exists='append',index=False)
+    try:
+        fromdate = fromdate if fromdate is not None else datetime.datetime.today().strftime('%Y-%m-%d')
+        resdf = extractKeyItemsFromStockValue(fromdate)
+        exist_df = pd.read_sql(f"select * from KeyItem where issuedate = '{fromdate}'",sqlserver)    
+        resdf['issuedate'] = pd.to_datetime(resdf['issuedate'])
+        exist_df['issuedate'] = pd.to_datetime(exist_df['issuedate'])
+        join_cols = ['issuedate','category','code']
+        n,_ = filterNewExistTable(resdf,exist_df,join_cols,join_cols,'KeyItemId')
+        resdf.to_sql('KeyItem',sqlserver,'dbo',if_exists='append',index=False)
+        print(f'total {len(n)} rows inserted')
+    except Exception as e:
+        print(e)
+    
 
 
 if __name__ == '__main__':
-    extractdate = sys.argv[1] if len(sys.argv)==2 else None
-    loadKeyItem(extractdate)
+    arglen = len(sys.argv)
+    if arglen == 1:
+        print('load for today date')
+        extractdate = None
+        loadKeyItem(extractdate)
+    elif arglen == 2:        
+        extractdate = sys.argv[1]
+        print(f'load for {extractdate}')
+        loadKeyItem(extractdate)
+    elif arglen == 3:        
+        daterange = [d.strftime('%Y-%m-%d') for d in pd.date_range(sys.argv[1],sys.argv[2])]
+        print(f'load for {daterange}')
+        for extractdate in daterange:
+            loadKeyItem(extractdate)
+
+# tmp = pd.DataFrame(columns = ['issuedate','category','code'], data=[('2020-11-27','반전','001210')])
+# tmp.info()
+# exist_df.info()
+# exist_df = pd.read_sql(f"select * from KeyItem where issuedate = '2020-11-27'",sqlserver)    
+# tt = exist_df[exist_df['code'] == '001210']
+# tmp['issuedate'] = pd.to_datetime(tmp['issuedate'])
+# tt['issuedate'] = pd.to_datetime(tt['issuedate'])
+# join_cols = ['issuedate','category','code']
+# pd.merge(tmp,tt,left_on=join_cols,right_on=join_cols)
+# colforexist = 
+# merged = pd.merge(tmp,tt,left_on=join_cols,right_on=join_cols,how='left',suffixes=['','_y'])
+# colkey = colforexist+'_y' if colforexist + '_y' in list(merged) else colforexist
+# new,exist = merged[merged[colkey].isnull()],merged[merged[colkey].notnull()]  
+# leftcols = list(left)
+# if containsright:
+#     return new,exist  
+# else:
+#     return new[leftcols],exist[leftcols]
+
+# n,_ = filterNewExistTable(tmp,tt,join_cols,join_cols,'KeyItemId')
 
 # df['date'] = pd.to_datetime(df['date'])
 # df = df.set_index('date')

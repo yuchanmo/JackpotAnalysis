@@ -6,13 +6,22 @@
 import json
 import requests
 
-url = "https://kauth.kakao.com/oauth/token"
+u = 'https://kauth.kakao.com/oauth/authorize?client_id=fe34e2af8f566373b56dd11318e44207&response_type=code&redirect_uri=http://114.203.39.76:9999'
 
+
+dir(rr)
+rr.url
+rr.content
+uu = rr.url
+rrr = requests.post(uu,{'email':'densets@nate.com','password':'ahdbapwk55'})
+rrr.url
+
+url = "https://kauth.kakao.com/oauth/token"
 data = {
     "grant_type" : "authorization_code",
     "client_id" : "fe34e2af8f566373b56dd11318e44207",
-    "redirect_uri" : "https://www.google.com",
-    "code"         : "YynqOi9TZjMqxAvTTBhG2j1yUDsm7SytVuhOTCoCh3hqwZgK8IHMFLdMndKeLNh37HqOTgo9cxcAAAF0jSSmKg"
+    "redirect_uri" : "http://localhost:58104/Home/oauth",
+    "code"         : "rari1K1l8EiqiaWcjNvqPiM7nYqyUmTwKif12uovBfyQMin53xhrnE_9gqRT7zRQ7P7_fwopyNgAAAF2GWJN9g"
     
 }
 response = requests.post(url, data=data)
@@ -41,6 +50,15 @@ print(tokens)
 # response = requests.post(url, data=data)
 
 # print(response.json())
+
+tokens = {
+    "access_token": "3-FMWEyq7wxL_TCeCFR8fOzVqBunB9KLi2pq3go9cxgAAAF2GXAOjw",
+    "token_type": "bearer",
+    "refresh_token": "8aIHacqWUS3z0s4dyvU4pf8JEKgRTY7TQakvSwo9cxgAAAF2GXAOjg",
+    "expires_in": 21599,
+    "scope": "talk_message",
+    "refresh_token_expires_in": 5183999
+}
 
 url = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
 friend_url = "https://kapi.kakao.com/v1/api/talk/friends/message/default/send"
