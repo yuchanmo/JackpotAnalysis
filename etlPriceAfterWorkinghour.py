@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import math
 from dbconnector import sqlserver
-import pymysql
+#import pymysql
 from sqlalchemy import create_engine
 from datetime import datetime
 from etlhelper import *
@@ -78,7 +78,7 @@ def loadPriceAfterWokringHour():
     n,_ = filterNewExistTable(p.resdf,dbdf,join_cols,join_cols,'PriceAfterHourId')    
     print('insert new data')    
     n[cols].to_sql('PriceAfterWorkingHour',sqlserver,if_exists='append',index=False)
-    print(f'total {len(rdf)} rows inserted')
+    print(f'total {len(n)} rows inserted')
 
 if __name__ =='__main__':
     loadPriceAfterWokringHour()

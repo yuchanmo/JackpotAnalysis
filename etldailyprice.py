@@ -44,14 +44,17 @@ def loadDailyPrice(c:str,pagenum:int=1):
   except Exception as e:
     print(e)
   
-#loadDailyPrice('263050',1)
-#d = getDailyStockValue('263050',1)
-if __name__ =='__main__':
+
+def loadData(pages:int):
   num_cores = multiprocessing.cpu_count()
-  pages = 2 if len(sys.argv) < 2  else int(sys.argv[1])
-  print(pages)
   codes = getCodeInfo().code.unique()
   parmap.map(loadDailyPrice,codes,pages,pm_pbar=True,pm_processes=num_cores)
+
+
+if __name__ =='__main__':  
+  pages = 2 if len(sys.argv) < 2  else int(sys.argv[1])
+  loadData(pages)
+  
 
 # from datetime import datetime
 # d = datetime(2020,1,1)

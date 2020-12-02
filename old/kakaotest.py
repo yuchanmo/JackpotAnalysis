@@ -5,6 +5,7 @@
 # code
 import json
 import requests
+from
 
 u = 'https://kauth.kakao.com/oauth/authorize?client_id=fe34e2af8f566373b56dd11318e44207&response_type=code&redirect_uri=http://114.203.39.76:9999'
 
