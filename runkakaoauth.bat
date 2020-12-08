@@ -1,0 +1,1 @@
+D:\Programming\stocktrading\trendanalyzer\env\Scripts\python.exe D:\Programming\stocktrading\trendanalyzer\wakeupkakoauth.py
