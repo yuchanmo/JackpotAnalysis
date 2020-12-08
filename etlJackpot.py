@@ -18,6 +18,7 @@ print('start to find jackpot item')
 def loadData():  
   try:
     fromstr = datetime.today().strftime('%Y-%m-%d')
+    #fromstr = '2020-12-08'
 
     sql = f'''
     select c.name,p.code,p.startval, p.curval,p.curvol,p.Regdate
@@ -75,7 +76,7 @@ def recent2Maxim2Minimum(g):
   x = g['curval'].values
   maxx = argrelextrema(x, np.greater)[0]
   minn = argrelextrema(x, np.less)[0]
-  return str(list(g.iloc[maxx]['curval'][-3:].values))+'-'+str(list(g.iloc[minn]['curval'][-3:].values))
+  return str(list(g.iloc[minn]['curval'][-1:].values))+'-'+str(list(g.iloc[maxx]['curval'][-1:].values))
 
 def loadExistData():
   sql ='''
@@ -123,22 +124,3 @@ if len(fdf)>0:
   print(f'{len(n)} rows inserted')
 
     
-
-# df[df['code']=='042000'][['curval','curvol']].apply(findInflectionPoint).apply(pd.Series)
-# df.groupby(['code'])[['curval','curvol']].apply(lambda x : x.apply(findInflectionPoint))
-# i = findInflectionPoint(s.values)
-# plt.plot(s.index,s)
-# plt.plot(s.iloc[i].index,s.iloc[i],'x')
-# plt.show()
-# df.head()
-
-# ss = df[df['code']=='042000']
-# recent2Maxim2Minimum(ss)
-
-# x = ss['curval'].values
-# maxx = argrelextrema(x, np.greater)[0]
-# minn = argrelextrema(x, np.less)[0]
-# ss.iloc[maxx]['curval']
-
-
-# tt = findInflectionPoint(df[df['code']=='042000']['curval'])
