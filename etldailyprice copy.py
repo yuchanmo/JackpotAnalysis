@@ -45,12 +45,12 @@ def loadDailyPrice(c:str,pagenum:int=1):
     df = getDailyStockValue(c,pagenum)    
     mintime,maxtime =  df.date.min(),df.date.max()
     mintimestr,maxtimestr = mintime.strftime('%Y-%m-%d'),maxtime.strftime('%Y-%m-%d')
-    # exist_df = getDailyPriceFromDb(c,mintimestr,maxtimestr)    
-    # exist_df['date'] = pd.to_datetime(exist_df['date'])
-    # joincol = ['date','code']
-    # new,exist = filterNewExistTable(df,exist_df,joincol,joincol,'code_y',False)
-    df.to_sql('DailyPrice',mysql,if_exists='append',index=False)
-    print(f'code : {c} => {len(df)} rows inserted')
+    exist_df = getDailyPriceFromDb(c,mintimestr,maxtimestr)    
+    exist_df['date'] = pd.to_datetime(exist_df['date'])
+    joincol = ['date','code']
+    new,exist = filterNewExistTable(df,exist_df,joincol,joincol,'code_y',False)
+    new.to_sql('DailyPrice',mysql,if_exists='append',index=False)
+    print(f'code : {c} => {len(new)} rows inserted')
     print('=========================================================')
   except Exception as e:
     print(e)

@@ -13,10 +13,11 @@ code_df = code_df[cols]
 colname_map = {'회사명':'name','종목코드':'code','업종':'category','주요제품':'products','상장일':'issuedate','결산월':'settlementdate'}
 code_df = code_df.rename(columns=colname_map)   
 
+
 exist_df = pd.read_sql('select * from Code',mysql)
 joincols = ['code']
 #code_df.to_sql('Code',mysql,if_exists='append',index=False)
 
-n,e = filterNewExistTable(code_df,exist_df,joincols,joincols,'Id',False)
-n.to_sql('Code',sqlserver,if_exists='append',index=False)
+n,e = filterNewExistTable(code_df,exist_df,joincols,joincols,'name_y',False)
+n.to_sql('Code',mysql,if_exists='append',index=False)
 print(f'{len(n)} rows inserted')
